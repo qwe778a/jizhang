@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的记账本</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC",
+                   "Microsoft YaHei", sans-serif;
+      background: #f5f6f8;
+      color: #222;
+      padding-bottom: 90px;
+    }
+
+    .header {
+      background: #ffffff;
+      padding: 22px 18px 18px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
+
+    .header p {
+      font-size: 13px;
+      color: #999;
+    }
+
+    .container {
+      padding: 15px;
+    }
+
+    .summary {
+      background: #222;
+      color: white;
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 15px;
+    }
+
+    .summary-title {
+      font-size: 13px;
+      opacity: .7;
+    }
+
+    .balance {
+      font-size: 32px;
+      font-weight: bold;
+      margin: 8px 0 20px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .summary-item {
+      width: 48%;
+    }
+
+    .summary-label {
+      font-size: 12px;
+      opacity: .7;
+      margin-bottom: 5px;
+    }
+
+    .income {
+      color: #38c98b;
+    }
+
+    .expense {
+      color: #ff6b6b;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 15px;
+    }
+
+    .card h2 {
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+
+    .type-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .type-btn {
+      flex: 1;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      background: #eee;
+      font-size: 15px;
+    }
+
+    .type-btn.active {
+      background: #222;
+      color: white;
+    }
+
+    .form-group {
+      margin-bottom: 13px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 6px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 15px;
+      background: white;
+      outline: none;
+    }
+
+    .save-btn {
+      width: 100%;
+      border: none;
+      background: #222;
+      color: white;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    .bill {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .bill:last-child {
+      border-bottom: none;
+    }
+
+    .bill-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .bill-note {
+      font-size: 12px;
+      color: #999;
+      margin-top: 5px;
+    }
+
+    .bill-right {
+      text-align: right;
+    }
+
+    .bill-money {
+      font-size: 17px;
+      font-weight: bold;
+    }
+
+    .delete-btn {
+      border: none;
+      background: none;
+      color: #aaa;
+      font-size: 12px;
+      margin-top: 6px;
+    }
+
+    .empty {
+      text-align: center;
+      color: #aaa;
+      padding: 25px 0;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>我的记账本</h1>
+    <p id="today"></p>
+  </div>
+
+  <div class="container">
+
+    <div class="summary">
+
+      <div class="summary-title">
+        当前结余
+      </div>
+
+      <div class="balance" id="balance">
+        ¥0.00
+      </div>
+
+      <div class="summary-row">
+
+        <div class="summary-item">
+          <div class="summary-label">总收入</div>
+          <div class="income" id="totalIncome">
+            ¥0.00
+          </div>
+        </div>
+
+        <div class="summary-item">
+          <div class="summary-label">总支出</div>
+          <div class="expense" id="totalExpense">
+            ¥0.00
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h2>记一笔</h2>
+
+      <div class="type-buttons">
+
+        <button
+          class="type-btn active"
+          id="expenseBtn"
+          onclick="setType('expense')">
+          支出
+        </button>
+
+        <button
+          class="type-btn"
+          id="incomeBtn"
+          onclick="setType('income')">
+          收入
+        </button>
+
+      </div>
+
+
+      <div class="form-group">
+        <label>金额</label>
+
+        <input
+          id="amount"
+          type="number"
+          inputmode="decimal"
+          placeholder="请输入金额">
+      </div>
+
+
+      <div class="form-group">
+        <label>分类</label>
+
+        <select id="category">
+          <option>餐饮</option>
+          <option>购物</option>
+          <option>交通</option>
+          <option>生活</option>
+          <option>娱乐</option>
+          <option>工资</option>
+          <option>生意</option>
+          <option>其他</option>
+        </select>
+      </div>
+
+
+      <div class="form-group">
+        <label>日期</label>
+
+        <input
+          id="date"
+          type="date">
+      </div>
+
+
+      <div class="form-group">
+        <label>备注</label>
+
+        <input
+          id="note"
+          type="text"
+          placeholder="例如：午饭、进货、工资">
+      </div>
+
+
+      <button
+        class="save-btn"
+        onclick="saveBill()">
+        保存账单
+      </button>
+
+    </div>
+
+
+    <div class="card">
+
+      <h2>账单明细</h2>
+
+      <div id="billList"></div>
+
+    </div>
+
+  </div>
+
+
+<script>
+
+let currentType = "expense";
+
+let bills =
+  JSON.parse(localStorage.getItem("myBills")) || [];
+
+
+const today =
+  new Date().toISOString().split("T")[0];
+
+document.getElementById("date").value = today;
+
+document.getElementById("today").innerText =
+  new Date().toLocaleDateString(
+    "zh-CN",
+    {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    }
+  );
+
+
+function setType(type) {
+
+  currentType = type;
+
+  document
+    .getElementById("expenseBtn")
+    .classList.toggle(
+      "active",
+      type === "expense"
+    );
+
+  document
+    .getElementById("incomeBtn")
+    .classList.toggle(
+      "active",
+      type === "income"
+    );
+
+}
+
+
+function saveBill() {
+
+  const amount =
+    Number(
+      document.getElementById("amount").value
+    );
+
+  const category =
+    document.getElementById("category").value;
+
+  const date =
+    document.getElementById("date").value;
+
+  const note =
+    document.getElementById("note").value;
+
+
+  if (!amount || amount <= 0) {
+
+    alert("请输入正确的金额");
+
+    return;
+
+  }
+
+
+  bills.unshift({
+
+    id: Date.now(),
+
+    type: currentType,
+
+    amount,
+
+    category,
+
+    date,
+
+    note
+
+  });
+
+
+  localStorage.setItem(
+    "myBills",
+    JSON.stringify(bills)
+  );
+
+
+  document.getElementById("amount").value = "";
+
+  document.getElementById("note").value = "";
+
+
+  renderBills();
+
+}
+
+
+function deleteBill(id) {
+
+  if (!confirm("确定删除这笔账单吗？")) {
+    return;
+  }
+
+
+  bills =
+    bills.filter(
+      item => item.id !== id
+    );
+
+
+  localStorage.setItem(
+    "myBills",
+    JSON.stringify(bills)
+  );
+
+
+  renderBills();
+
+}
+
+
+function renderBills() {
+
+  const list =
+    document.getElementById("billList");
+
+
+  if (bills.length === 0) {
+
+    list.innerHTML =
+      '<div class="empty">还没有账单，先记一笔吧</div>';
+
+  } else {
+
+    list.innerHTML =
+      bills.map(item => {
+
+        const isIncome =
+          item.type === "income";
+
+
+        return `
+
+          <div class="bill">
+
+            <div>
+
+              <div class="bill-title">
+                ${item.category}
+              </div>
+
+              <div class="bill-note">
+
+                ${item.date}
+
+                ${item.note
+                  ? " · " + item.note
+                  : ""}
+
+              </div>
+
+            </div>
+
+
+            <div class="bill-right">
+
+              <div
+                class="bill-money
+                ${isIncome
+                  ? "income"
+                  : "expense"}">
+
+                ${isIncome ? "+" : "-"}
+
+                ¥${item.amount.toFixed(2)}
+
+              </div>
+
+
+              <button
+                class="delete-btn"
+                onclick="deleteBill(${item.id})">
+
+                删除
+
+              </button>
+
+            </div>
+
+          </div>
+
+        `;
+
+      }).join("");
+
+  }
+
+
+  updateSummary();
+
+}
+
+
+function updateSummary() {
+
+  let income = 0;
+
+  let expense = 0;
+
+
+  bills.forEach(item => {
+
+    if (item.type === "income") {
+
+      income += item.amount;
+
+    } else {
+
+      expense += item.amount;
+
+    }
+
+  });
+
+
+  const balance =
+    income - expense;
+
+
+  document.getElementById(
+    "totalIncome"
+  ).innerText =
+    "¥" + income.toFixed(2);
+
+
+  document.getElementById(
+    "totalExpense"
+  ).innerText =
+    "¥" + expense.toFixed(2);
+
+
+  document.getElementById(
+    "balance"
+  ).innerText =
+    "¥" + balance.toFixed(2);
+
+}
+
+
+renderBills();
+
+</script>
+
+</body>
+</html>
