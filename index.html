@@ -3,621 +3,888 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>我的记账本</title>
+<title>记账</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;background:#f5f6f8;color:#222}
-button,input,select{font:inherit}
-button{cursor:pointer}
-.app{max-width:520px;margin:auto;min-height:100vh;padding-bottom:85px}
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;
+ background:#f5f6f8;color:#222
+}
+button,input{font:inherit}
+.app{max-width:520px;margin:auto;padding-bottom:90px}
 .page{display:none}.page.active{display:block}
-.header,.topbar{background:#fff}
-.header{padding:22px 18px 15px}
-.header h1{font-size:25px}.header p{font-size:13px;color:#aaa;margin-top:5px}
-.topbar{height:58px;display:flex;align-items:center;justify-content:center;position:relative;font-size:19px;font-weight:700}
-.back{position:absolute;left:18px;border:0;background:none;font-size:28px}
-.content{padding:14px}
 
-.card{background:#fff;border-radius:18px;padding:18px;margin-bottom:14px}
-.title{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.title h2{font-size:19px}.small{font-size:12px;color:#999}
+.top{
+ height:70px;background:#fff;display:flex;
+ align-items:center;justify-content:center;
+ font-size:21px;font-weight:700;position:relative
+}
+.back{
+ position:absolute;left:18px;border:0;background:none;
+ color:#2684ff;font-size:32px
+}
 
-.summary{background:linear-gradient(135deg,#4376ff,#55b7ff);color:#fff;border-radius:18px;padding:20px}
-.monthSelect{border:0;background:transparent;color:#fff;margin-bottom:18px}
-.sumrow{display:flex}.sum{width:50%}.sum+ .sum{border-left:1px solid #ffffff40;padding-left:18px}
-.sum small{opacity:.8}.sum strong{display:block;font-size:22px;margin-top:5px}
-.balance{border-top:1px solid #ffffff40;margin-top:18px;padding-top:14px;display:flex;justify-content:space-between}
+.content{padding:16px}
+.card{
+ background:#fff;border-radius:20px;
+ padding:20px;margin-bottom:16px
+}
+h2{margin:0 0 20px;font-size:21px}
 
-.channels{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:14px 0}
-.channel,.pay{background:#fff;border:1px solid #eee;border-radius:13px;padding:12px 4px;text-align:center}
-.ico{width:38px;height:38px;border-radius:10px;color:#fff;display:flex;align-items:center;justify-content:center;margin:auto auto 6px}
-.wx{background:#20c66b}.zfb{background:#1687f8}.bank{background:#ff8a25}.other{background:#775cff}
-.mainBtn,.saveBtn{width:100%;border:0;background:#222;color:#fff;border-radius:13px;padding:15px;font-size:16px}
+.hero{
+ background:linear-gradient(135deg,#181818,#303030);
+ color:#fff;border-radius:22px;padding:26px 22px;
+ margin-bottom:16px
+}
+.hero small{color:#aaa;font-size:15px}
+.hero h1{font-size:36px;margin:12px 0}
+.hero p{margin:0;color:#aaa}
 
-.tx{display:flex;align-items:center;padding:14px 0;border-bottom:1px solid #eee}
-.tx:last-child{border:0}
-.txInfo{flex:1;min-width:0}.txName{font-weight:600}.meta{font-size:12px;color:#999;margin-top:5px;line-height:1.5}
-.txRight{text-align:right}.money{font-size:17px;font-weight:700}.income{color:#ff3b4f}.expense{color:#222}
-.miniBtn{border:0;background:none;color:#999;font-size:11px;margin:6px 0 0 10px}
-.empty{text-align:center;color:#aaa;padding:28px 0}
+.group{margin-bottom:18px}
+label{display:block;margin-bottom:9px;font-size:15px}
+input{
+ width:100%;height:56px;border:1px solid #ddd;
+ border-radius:13px;padding:0 14px;
+ background:#fff;outline:none
+}
+input::placeholder{color:#bbb}
 
-.form{padding:15px}.group{margin-bottom:17px}
-.group label{display:block;font-size:14px;margin-bottom:7px}
-.field{width:100%;height:50px;border:1px solid #ddd;border-radius:11px;padding:0 13px;background:#fff;outline:none}
-.tabs,.filters{display:flex;gap:9px;margin-bottom:17px}
-.tab,.filter{flex:1;border:0;background:#eee;border-radius:11px;padding:13px}
-.tab.active,.filter.active{background:#222;color:#fff}
-.tab.incomeActive{background:#ff3b4f;color:#fff}
-.paygrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.pay.selected{border:2px solid #222}
-.custom{display:none;margin-top:9px}
+.save{
+ width:100%;height:56px;border:0;
+ border-radius:14px;background:#222;color:#fff;
+ font-size:17px
+}
 
-.monthHead{background:#fff;padding:14px}
-.monthNav{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.monthNav button{border:0;width:38px;height:38px;border-radius:50%}
-.monthStat{background:#f6f6f6;border-radius:14px;padding:16px}
-.day{background:#fff;margin-top:10px;padding:0 16px}
-.dayHead{padding:14px 0;border-bottom:1px solid #eee}.dayHead strong{display:block}.dayHead small{color:#888}
+/* 资金列表 */
+.fund{
+ padding:18px 0;border-bottom:1px solid #eee
+}
+.fund:last-child{border-bottom:0}
+.fundTop{display:flex;align-items:center}
+.number{
+ width:36px;height:36px;border-radius:10px;
+ background:#f1f2f4;display:flex;
+ align-items:center;justify-content:center;
+ font-weight:700;margin-right:12px
+}
+.info{flex:1}
+.name{font-size:17px;font-weight:700}
+.note{font-size:12px;color:#999;margin-top:5px}
+.amount{text-align:right;font-size:18px;font-weight:700}
+.percent{font-size:12px;color:#999;margin-top:4px}
 
-/* 资金 */
-.fundHero{background:linear-gradient(135deg,#181818,#343434);color:#fff;border-radius:20px;padding:22px;margin-bottom:14px}
-.fundHero small{color:#bbb}.fundHero h1{font-size:34px;margin:9px 0}.fundHero p{font-size:13px;color:#bbb}
+.bar{
+ height:6px;background:#eee;border-radius:10px;
+ margin-top:13px;overflow:hidden
+}
+.bar span{
+ height:100%;display:block;background:#222;
+ border-radius:10px
+}
 
-.mode{display:flex;gap:8px;margin-bottom:16px}
-.mode button{flex:1;border:1px solid #ddd;background:#fff;padding:12px;border-radius:11px}
-.mode button.active{background:#222;color:#fff;border-color:#222}
+.actions{
+ display:flex;justify-content:flex-end;
+ gap:8px;margin-top:12px
+}
+.smallBtn{
+ border:0;border-radius:9px;
+ padding:8px 12px;background:#f2f2f2;
+ color:#333;font-size:13px
+}
+.blue{color:#2684ff}
+.gray{color:#999}
 
-.fundItem{padding:16px 0;border-bottom:1px solid #eee}
-.fundItem:last-child{border:0}
-.fundRow{display:flex;align-items:center}
-.rank{width:34px;height:34px;border-radius:10px;background:#f1f2f4;display:flex;align-items:center;justify-content:center;font-weight:700;margin-right:10px}
-.fundInfo{flex:1}.fundName{font-weight:700}.fundMeta{font-size:12px;color:#999;margin-top:4px}
-.fundMoney{text-align:right;font-weight:700}
-.percent{font-size:12px;color:#777;margin-top:4px}
-.bar{height:7px;background:#eee;border-radius:10px;margin-top:11px;overflow:hidden}
-.bar span{display:block;height:100%;background:#222;border-radius:10px}
-.actions{text-align:right;margin-top:8px}
-.edit{color:#3478f6}.danger{color:#aaa}
-.detailBtn{border:0;background:#f2f2f2;padding:7px 10px;border-radius:8px;font-size:12px;margin-top:8px}
+.empty{
+ text-align:center;color:#aaa;
+ padding:30px 0
+}
 
-.detailTotal{background:#222;color:#fff;border-radius:17px;padding:20px;margin-bottom:14px}
-.detailTotal small{color:#bbb}.detailTotal h1{margin-top:7px}
-.detailItem{padding:15px 0;border-bottom:1px solid #eee}
+/* 组成页面 */
+.summaryGrid{
+ display:grid;grid-template-columns:repeat(3,1fr);
+ gap:8px;margin-bottom:16px
+}
+.summaryBox{
+ background:#fff;border-radius:15px;
+ padding:15px 10px;text-align:center
+}
+.summaryBox small{
+ display:block;color:#999;font-size:12px;
+ margin-bottom:7px
+}
+.summaryBox strong{font-size:15px}
+.red{color:#ff3b4f}
+.green{color:#25b96f}
+
+.detail{
+ padding:16px 0;border-bottom:1px solid #eee
+}
+.detail:last-child{border-bottom:0}
 .detailTop{display:flex;align-items:flex-start}
-.detailNo{width:35px;height:35px;border-radius:9px;background:#dce9f5;display:flex;align-items:center;justify-content:center;margin-right:10px;font-weight:700}
-.detailInfo{flex:1}.detailName{font-weight:700}.detailNote{font-size:12px;color:#999;margin-top:5px}
+.detailNo{
+ width:36px;height:36px;border-radius:10px;
+ background:#e8eef5;display:flex;
+ align-items:center;justify-content:center;
+ font-weight:700;margin-right:11px
+}
+.detailInfo{flex:1}
+.detailName{font-weight:700}
+.detailNote{font-size:12px;color:#999;margin-top:5px}
 .detailMoney{font-size:17px;font-weight:700}
 
-/* 导航 */
-.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;height:72px;background:#fff;border-top:1px solid #eee;display:flex;z-index:20}
-.nav{flex:1;border:0;background:none;color:#888;font-size:11px}.nav b{display:block;font-size:21px;margin-bottom:3px}.nav.active{color:#111}
-.plus{width:44px;height:44px;border-radius:50%;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;margin:auto;font-size:27px}
+/* 底部 */
+.bottom{
+ position:fixed;bottom:0;left:50%;
+ transform:translateX(-50%);
+ width:100%;max-width:520px;height:72px;
+ background:#fff;border-top:1px solid #eee;
+ display:flex
+}
+.nav{
+ flex:1;border:0;background:none;
+ color:#888;font-size:12px
+}
+.nav b{display:block;font-size:22px;margin-bottom:3px}
+.nav.active{color:#111}
+.plus{
+ width:45px;height:45px;border-radius:50%;
+ background:#111;color:#fff;
+ display:flex;align-items:center;
+ justify-content:center;margin:auto;font-size:28px
+}
 </style>
 </head>
 
 <body>
+
 <div class="app">
 
-<!-- 首页 -->
-<section id="home" class="page active">
-<div class="header"><h1>我的记账本</h1><p>记录每一笔，清楚知道钱去了哪里</p></div>
+<!-- 资金主页 -->
+<section id="fundPage" class="page active">
+
+<div class="top">资金占比</div>
+
 <div class="content">
 
-<div class="summary">
-<select id="homeMonth" class="monthSelect" onchange="changeMonth()"></select>
-<div class="sumrow">
-<div class="sum"><small>支出</small><strong id="homeExpense">¥0.00</strong></div>
-<div class="sum"><small>收入</small><strong id="homeIncome">¥0.00</strong></div>
-</div>
-<div class="balance"><span>本月结余</span><b id="homeBalance">¥0.00</b></div>
-</div>
-
-<div class="channels">
-<div class="channel"><div class="ico wx">微</div>微信</div>
-<div class="channel"><div class="ico zfb">支</div>支付宝</div>
-<div class="channel"><div class="ico bank">卡</div>银行卡</div>
-<div class="channel"><div class="ico other">+</div>其他</div>
-</div>
-
-<button class="mainBtn" onclick="openAdd()">＋ 记一笔</button>
-
-<div class="card" style="margin-top:14px">
-<div class="title"><h2>今日账单</h2><span class="small" onclick="showPage('bills')">查看全部 ›</span></div>
-<div id="todayList"></div>
-</div>
-
-<div class="card">
-<div class="title"><h2>本月账单</h2><span class="small" onclick="showPage('bills')">查看更多 ›</span></div>
-<div id="monthList"></div>
-</div>
-
-</div>
-</section>
-
-<!-- 记账 -->
-<section id="add" class="page">
-<div class="topbar"><button class="back" onclick="showPage('home')">‹</button>记一笔</div>
-<div class="form">
-
-<div class="tabs">
-<button id="expenseTab" class="tab active" onclick="setType('expense')">支出</button>
-<button id="incomeTab" class="tab" onclick="setType('income')">收入</button>
-</div>
-
-<div class="group"><label>金额</label><input id="amount" class="field" type="number" placeholder="请输入金额"></div>
-<div class="group"><label>分类</label><input id="category" class="field" placeholder="自己填写，例如：餐饮、工资"></div>
-
-<div class="group">
-<label>消费渠道</label>
-<div class="paygrid">
-<button class="pay selected" onclick="selectPay('微信',this)"><div class="ico wx">微</div>微信</button>
-<button class="pay" onclick="selectPay('支付宝',this)"><div class="ico zfb">支</div>支付宝</button>
-<button class="pay" onclick="selectPay('银行卡',this)"><div class="ico bank">卡</div>银行卡</button>
-<button class="pay" onclick="selectPay('其他',this)"><div class="ico other">+</div>其他</button>
-</div>
-<input id="customPay" class="field custom" placeholder="填写其他渠道">
-</div>
-
-<div class="group"><label>日期</label><input id="date" class="field" type="date"></div>
-<div class="group"><label>时间</label><input id="time" class="field" type="time"></div>
-<div class="group"><label>备注</label><input id="note" class="field" placeholder="选填"></div>
-<button class="saveBtn" onclick="saveBill()">保存</button>
-</div>
-</section>
-
-<!-- 月账单 -->
-<section id="bills" class="page">
-<div class="topbar">月账单</div>
-
-<div class="monthHead">
-<div class="monthNav">
-<button onclick="moveMonth(-1)">‹</button>
-<b id="billMonth"></b>
-<button onclick="moveMonth(1)">›</button>
-</div>
-
-<div class="monthStat">
-<div class="sumrow">
-<div class="sum"><small>支出</small><strong id="billExpense">¥0.00</strong></div>
-<div class="sum"><small>收入</small><strong class="income" id="billIncome">¥0.00</strong></div>
-</div>
-<div class="balance"><span>本月结余</span><b id="billBalance">¥0.00</b></div>
-</div>
-</div>
-
-<div class="filters" style="padding:14px;margin:0">
-<button class="filter active" onclick="setFilter('all',this)">全部</button>
-<button class="filter" onclick="setFilter('expense',this)">支出</button>
-<button class="filter" onclick="setFilter('income',this)">收入</button>
-</div>
-
-<div id="billGroups"></div>
-</section>
-
-<!-- 资金 -->
-<section id="funds" class="page">
-<div class="topbar">资金占比</div>
-<div class="content">
-
-<div class="fundHero">
+<div class="hero">
 <small>当前总资金</small>
-<h1 id="fundTotal">¥0.00</h1>
+<h1 id="totalMoney">¥0.00</h1>
 <p id="fundCount">共 0 个资金项目</p>
 </div>
 
 <div class="card">
-<div class="title"><h2 id="fundFormTitle">添加资金</h2></div>
 
-<div class="mode">
-<button id="normalMode" class="active" onclick="setFundMode('normal')">普通资金</button>
-<button id="detailMode" onclick="setFundMode('detail')">明细资金</button>
+<h2 id="formTitle">添加资金</h2>
+
+<div class="group">
+<label>资金名称</label>
+<input id="fundName"
+ placeholder="例如：支付宝、微信、银行卡">
 </div>
 
-<div class="group"><label>资金名称</label><input id="fundName" class="field" placeholder="例如：支付宝、收藏、公账"></div>
-
-<div id="normalAmount" class="group">
+<div class="group">
 <label>金额</label>
-<input id="fundAmount" class="field" type="number" placeholder="请输入金额">
+<input id="fundAmount"
+ type="number"
+ placeholder="请输入当前金额">
 </div>
 
-<div id="detailTip" class="small" style="display:none;margin-bottom:17px">
-明细资金不用填写总额，进入资金明细后添加项目，系统自动计算总金额。
+<div class="group">
+<label>备注（选填）</label>
+<input id="fundNote"
+ placeholder="例如：货款、尾款">
 </div>
 
-<div class="group"><label>备注（选填）</label><input id="fundNote" class="field" placeholder="例如：备用金、收藏品"></div>
+<button class="save" onclick="saveFund()">
+<span id="saveText">保存资金</span>
+</button>
 
-<button class="saveBtn" id="fundSaveBtn" onclick="saveFund()">保存资金</button>
 </div>
 
 <div class="card">
-<div class="title"><h2>资金明细</h2><span class="small">按金额从高到低</span></div>
+<h2>资金明细</h2>
 <div id="fundList"></div>
 </div>
 
 </div>
 </section>
 
-<!-- 某资金的内部明细 -->
-<section id="fundDetail" class="page">
-<div class="topbar">
-<button class="back" onclick="showPage('funds')">‹</button>
-<span id="detailTitle">资金明细</span>
+
+<!-- 资金组成页面 -->
+<section id="detailPage" class="page">
+
+<div class="top">
+<button class="back" onclick="backFunds()">‹</button>
+<span id="detailTitle">资金组成</span>
 </div>
 
 <div class="content">
 
-<div class="detailTotal">
-<small>明细合计</small>
-<h1 id="detailTotal">¥0.00</h1>
+<div class="hero">
+<small>资金总额</small>
+<h1 id="detailFundTotal">¥0.00</h1>
+<p id="detailFundName"></p>
+</div>
+
+<div class="summaryGrid">
+
+<div class="summaryBox">
+<small>资金总额</small>
+<strong id="sumTotal">¥0.00</strong>
+</div>
+
+<div class="summaryBox">
+<small>已记录组成</small>
+<strong id="sumUsed">¥0.00</strong>
+</div>
+
+<div class="summaryBox">
+<small>未分配</small>
+<strong id="sumRemain">¥0.00</strong>
+</div>
+
 </div>
 
 <div class="card">
-<div class="title"><h2 id="detailFormTitle">添加明细</h2></div>
+
+<h2 id="detailFormTitle">添加组成</h2>
 
 <div class="group">
 <label>编号</label>
-<input id="detailNumber" class="field" placeholder="自动生成，也可以自己修改">
+<input id="detailNumber"
+ placeholder="自动生成，也可以修改">
 </div>
 
 <div class="group">
 <label>名称</label>
-<input id="detailName" class="field" placeholder="例如：绿异苍宇、比特龙">
+<input id="detailName"
+ placeholder="请输入名称">
 </div>
 
 <div class="group">
 <label>金额</label>
-<input id="detailAmount" class="field" type="number" placeholder="请输入金额">
+<input id="detailAmount"
+ type="number"
+ placeholder="请输入金额">
 </div>
 
 <div class="group">
-<label>备注 / 款项说明</label>
-<input id="detailNoteInput" class="field" placeholder="例如：2.2号补尾款、合资2.10款">
+<label>备注（选填）</label>
+<input id="detailNote"
+ placeholder="例如：货款、尾款">
 </div>
 
-<button class="saveBtn" id="detailSaveBtn" onclick="saveDetail()">保存明细</button>
+<button class="save" onclick="saveDetail()">
+<span id="detailSaveText">保存组成</span>
+</button>
+
 </div>
 
 <div class="card">
-<div class="title"><h2>明细列表</h2><span class="small">按编号显示</span></div>
+<h2>组成明细</h2>
 <div id="detailList"></div>
 </div>
 
 </div>
 </section>
 
-<!-- 底部 -->
+
 <div class="bottom">
-<button id="navHome" class="nav active" onclick="showPage('home')"><b>⌂</b>首页</button>
-<button class="nav" onclick="openAdd()"><div class="plus">+</div></button>
-<button id="navBills" class="nav" onclick="showPage('bills')"><b>▤</b>账单</button>
-<button id="navFunds" class="nav" onclick="showPage('funds')"><b>◉</b>资金</button>
+<button class="nav">
+<b>⌂</b>
+首页
+</button>
+
+<button class="nav">
+<div class="plus">+</div>
+</button>
+
+<button class="nav">
+<b>▤</b>
+账单
+</button>
+
+<button class="nav active" onclick="backFunds()">
+<b>◉</b>
+资金
+</button>
 </div>
 
 </div>
+
 
 <script>
 const $=id=>document.getElementById(id);
-const pad=n=>String(n).padStart(2,"0");
-const today=()=>{let d=new Date();return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`};
-const nowTime=()=>{let d=new Date();return `${pad(d.getHours())}:${pad(d.getMinutes())}`};
-const money=n=>"¥"+Number(n||0).toLocaleString("zh-CN",{minimumFractionDigits:2,maximumFractionDigits:2});
-const esc=s=>String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
 
-let bills=JSON.parse(localStorage.getItem("jizhangBills"))||[];
-let funds=JSON.parse(localStorage.getItem("jizhangFunds"))||[];
-
-/* 给旧资金数据补充新结构 */
-funds=funds.map(f=>({
-  ...f,
-  mode:f.mode||"normal",
-  details:Array.isArray(f.details)?f.details:[]
-}));
-
-let type="expense",pay="微信",filter="all",fundMode="normal";
-let editFundId=null,currentFundId=null,editDetailId=null;
-let d=new Date(),year=d.getFullYear(),month=d.getMonth()+1;
-
-$("date").value=today();
-$("time").value=nowTime();
-
-function saveData(){
- localStorage.setItem("jizhangBills",JSON.stringify(bills));
- localStorage.setItem("jizhangFunds",JSON.stringify(funds));
-}
-
-function showPage(id){
- document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
- $(id).classList.add("active");
- document.querySelectorAll(".nav").forEach(x=>x.classList.remove("active"));
- if(id==="home"){$("navHome").classList.add("active");renderHome()}
- if(id==="bills"){$("navBills").classList.add("active");renderBills()}
- if(id==="funds"){$("navFunds").classList.add("active");renderFunds()}
- window.scrollTo(0,0);
-}
-
-function openAdd(){
- $("date").value=today();$("time").value=nowTime();showPage("add");
-}
-
-function setType(v){
- type=v;
- $("expenseTab").className="tab"+(v==="expense"?" active":"");
- $("incomeTab").className="tab"+(v==="income"?" incomeActive":"");
-}
-
-function selectPay(v,el){
- pay=v;
- document.querySelectorAll(".pay").forEach(x=>x.classList.remove("selected"));
- el.classList.add("selected");
- $("customPay").style.display=v==="其他"?"block":"none";
-}
-
-function saveBill(){
- let amount=+$("amount").value,category=$("category").value.trim();
- let channel=pay==="其他"?$("customPay").value.trim():pay;
- if(!amount)return alert("请输入正确金额");
- if(!category)return alert("请输入分类");
- if(!channel)return alert("请输入消费渠道");
-
- bills.push({
-  id:Date.now(),type,amount,category,channel,
-  date:$("date").value,time:$("time").value,note:$("note").value.trim()
+const money=n=>
+ "¥"+Number(n||0).toLocaleString("zh-CN",{
+ minimumFractionDigits:2,
+ maximumFractionDigits:2
  });
 
+const esc=s=>
+ String(s||"").replace(/[&<>"']/g,m=>({
+ "&":"&amp;",
+ "<":"&lt;",
+ ">":"&gt;",
+ '"':"&quot;",
+ "'":"&#039;"
+ })[m]);
+
+let funds=
+ JSON.parse(localStorage.getItem("jizhangFundsV2"))||[];
+
+let editFundId=null;
+let currentFundId=null;
+let editDetailId=null;
+
+function saveData(){
+ localStorage.setItem(
+ "jizhangFundsV2",
+ JSON.stringify(funds)
+ );
+}
+
+
+/* =====================
+   资金
+===================== */
+
+function saveFund(){
+
+ const name=$("fundName").value.trim();
+ const amount=Number($("fundAmount").value);
+ const note=$("fundNote").value.trim();
+
+ if(!name)
+  return alert("请输入资金名称");
+
+ if(!Number.isFinite(amount)||amount<0)
+  return alert("请输入正确金额");
+
+ if(editFundId){
+
+  const f=funds.find(x=>x.id===editFundId);
+
+  if(f){
+   f.name=name;
+   f.amount=amount;
+   f.note=note;
+  }
+
+ }else{
+
+  funds.push({
+   id:Date.now(),
+   name,
+   amount,
+   note,
+   details:[]
+  });
+
+ }
+
  saveData();
- $("amount").value=$("category").value=$("note").value=$("customPay").value="";
- showPage("home");
+ clearFundForm();
+ renderFunds();
 }
 
-function deleteBill(id){
- if(!confirm("确定删除这笔账单吗？"))return;
- bills=bills.filter(x=>x.id!==id);saveData();renderHome();renderBills();
+
+function clearFundForm(){
+
+ editFundId=null;
+
+ $("fundName").value="";
+ $("fundAmount").value="";
+ $("fundNote").value="";
+
+ $("formTitle").textContent="添加资金";
+ $("saveText").textContent="保存资金";
 }
 
-function txHTML(x){
- let inc=x.type==="income";
- return `<div class="tx">
-  <div class="txInfo">
-   <div class="txName">${esc(x.category)}</div>
-   <div class="meta">${esc(x.channel)}${x.note?" · "+esc(x.note):""}<br>${x.date} ${x.time||""}</div>
+
+function editFund(id){
+
+ const f=funds.find(x=>x.id===id);
+ if(!f)return;
+
+ editFundId=id;
+
+ $("fundName").value=f.name;
+ $("fundAmount").value=f.amount;
+ $("fundNote").value=f.note||"";
+
+ $("formTitle").textContent="编辑资金";
+ $("saveText").textContent="保存修改";
+
+ window.scrollTo({
+  top:0,
+  behavior:"smooth"
+ });
+}
+
+
+function deleteFund(id){
+
+ if(!confirm("确定删除这个资金项目吗？"))
+  return;
+
+ funds=funds.filter(x=>x.id!==id);
+
+ saveData();
+ renderFunds();
+}
+
+
+function renderFunds(){
+
+ const total=
+ funds.reduce((s,f)=>s+Number(f.amount||0),0);
+
+ $("totalMoney").textContent=money(total);
+
+ $("fundCount").textContent=
+ `共 ${funds.length} 个资金项目`;
+
+ const sorted=[...funds].sort(
+ (a,b)=>b.amount-a.amount
+ );
+
+ $("fundList").innerHTML=
+ sorted.length
+ ?
+ sorted.map((f,index)=>{
+
+  const percent=
+   total
+   ?f.amount/total*100
+   :0;
+
+  const detailTotal=
+   (f.details||[])
+   .reduce((s,x)=>s+Number(x.amount||0),0);
+
+  return `
+  <div class="fund">
+
+   <div class="fundTop">
+
+    <div class="number">
+     ${index+1}
+    </div>
+
+    <div class="info">
+
+     <div class="name">
+      ${esc(f.name)}
+     </div>
+
+     <div class="note">
+      ${f.note?esc(f.note):"暂无备注"}
+     </div>
+
+    </div>
+
+    <div class="amount">
+
+     ${money(f.amount)}
+
+     <div class="percent">
+      ${percent.toFixed(2)}%
+     </div>
+
+    </div>
+
+   </div>
+
+   <div class="bar">
+    <span style="width:${Math.min(percent,100)}%">
+    </span>
+   </div>
+
+   <div class="actions">
+
+    <button
+     class="smallBtn"
+     onclick="openDetails(${f.id})">
+     资金组成
+     ${(f.details||[]).length
+      ?`(${f.details.length})`
+      :""
+     }
+    </button>
+
+    <button
+     class="smallBtn blue"
+     onclick="editFund(${f.id})">
+     编辑
+    </button>
+
+    <button
+     class="smallBtn gray"
+     onclick="deleteFund(${f.id})">
+     删除
+    </button>
+
+   </div>
+
   </div>
-  <div class="txRight">
-   <div class="money ${inc?"income":"expense"}">${inc?"+":"-"}${money(x.amount)}</div>
-   <button class="miniBtn" onclick="deleteBill(${x.id})">删除</button>
-  </div>
+  `;
+
+ }).join("")
+
+ :
+
+ `<div class="empty">
+  还没有资金数据
  </div>`;
 }
 
-function monthBills(){
- return bills.filter(x=>x.date.startsWith(`${year}-${pad(month)}`));
-}
 
-function totals(a){
- return a.reduce((r,x)=>{
-  x.type==="income"?r.i+=+x.amount:r.e+=+x.amount;
-  return r;
- },{i:0,e:0});
-}
+/* =====================
+   打开资金组成
+===================== */
 
-function buildMonths(){
- let h="",n=new Date();
- for(let i=0;i<24;i++){
-  let x=new Date(n.getFullYear(),n.getMonth()-i,1),y=x.getFullYear(),m=x.getMonth()+1;
-  h+=`<option value="${y}-${pad(m)}">${y}年${m}月</option>`;
- }
- $("homeMonth").innerHTML=h;
- $("homeMonth").value=`${year}-${pad(month)}`;
-}
+function openDetails(id){
 
-function changeMonth(){
- [year,month]=$("homeMonth").value.split("-").map(Number);renderHome();
-}
-
-function renderHome(){
- buildMonths();
- let a=monthBills(),t=totals(a);
- $("homeExpense").textContent=money(t.e);
- $("homeIncome").textContent=money(t.i);
- $("homeBalance").textContent=money(t.i-t.e);
-
- let td=bills.filter(x=>x.date===today()).sort((a,b)=>(b.time||"").localeCompare(a.time||""));
- $("todayList").innerHTML=td.length?td.map(txHTML).join(""):'<div class="empty">今天还没有记账</div>';
-
- let ml=[...a].sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time)).slice(0,5);
- $("monthList").innerHTML=ml.length?ml.map(txHTML).join(""):'<div class="empty">本月还没有账单</div>';
-}
-
-function moveMonth(n){
- let x=new Date(year,month-1+n,1);year=x.getFullYear();month=x.getMonth()+1;renderBills();
-}
-
-function setFilter(v,el){
- filter=v;
- document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));
- el.classList.add("active");renderBills();
-}
-
-function renderBills(){
- $("billMonth").textContent=`${year}年${month}月`;
- let all=monthBills(),t=totals(all);
- $("billExpense").textContent=money(t.e);
- $("billIncome").textContent=money(t.i);
- $("billBalance").textContent=money(t.i-t.e);
-
- let a=filter==="all"?all:all.filter(x=>x.type===filter),g={};
- a.forEach(x=>(g[x.date]??=[]).push(x));
-
- $("billGroups").innerHTML=Object.keys(g).sort().reverse().map(date=>{
-  let items=g[date].sort((a,b)=>(b.time||"").localeCompare(a.time||"")),dt=totals(items);
-  return `<div class="day"><div class="dayHead"><strong>${date}</strong>
-  <small>支出 ${money(dt.e)}　收入 <span class="income">${money(dt.i)}</span></small></div>
-  ${items.map(txHTML).join("")}</div>`;
- }).join("")||'<div class="card"><div class="empty">这个月还没有账单</div></div>';
-}
-
-/* ===== 资金 ===== */
-
-function fundAmount(f){
- return f.mode==="detail"
- ?(f.details||[]).reduce((s,x)=>s+(+x.amount||0),0)
- :(+f.amount||0);
-}
-
-function setFundMode(v){
- fundMode=v;
- $("normalMode").className=v==="normal"?"active":"";
- $("detailMode").className=v==="detail"?"active":"";
- $("normalAmount").style.display=v==="normal"?"block":"none";
- $("detailTip").style.display=v==="detail"?"block":"none";
-}
-
-function saveFund(){
- let name=$("fundName").value.trim(),note=$("fundNote").value.trim(),amount=+$("fundAmount").value;
- if(!name)return alert("请输入资金名称");
- if(fundMode==="normal"&&(!Number.isFinite(amount)||amount<0))return alert("请输入正确金额");
-
- if(editFundId){
-  let f=funds.find(x=>x.id===editFundId);
-  if(f){f.name=name;f.note=note;f.mode=fundMode;if(fundMode==="normal")f.amount=amount}
- }else{
-  funds.push({id:Date.now(),name,note,mode:fundMode,amount:fundMode==="normal"?amount:0,details:[]});
- }
-
- saveData();clearFundForm();renderFunds();
-}
-
-function clearFundForm(){
- editFundId=null;fundMode="normal";
- $("fundName").value=$("fundAmount").value=$("fundNote").value="";
- $("fundFormTitle").textContent="添加资金";$("fundSaveBtn").textContent="保存资金";
- setFundMode("normal");
-}
-
-function editFund(id){
- let f=funds.find(x=>x.id===id);if(!f)return;
- editFundId=id;fundMode=f.mode;
- $("fundName").value=f.name;$("fundAmount").value=f.amount||"";$("fundNote").value=f.note||"";
- $("fundFormTitle").textContent="编辑资金";$("fundSaveBtn").textContent="保存修改";
- setFundMode(f.mode);window.scrollTo({top:0,behavior:"smooth"});
-}
-
-function deleteFund(id){
- if(!confirm("删除这个资金项目以及它的明细吗？"))return;
- funds=funds.filter(x=>x.id!==id);saveData();renderFunds();
-}
-
-function openFundDetail(id){
- currentFundId=id;editDetailId=null;clearDetailForm();
- let f=funds.find(x=>x.id===id);if(!f)return;
- $("detailTitle").textContent=f.name+"明细";
- renderDetail();showPage("fundDetail");
-}
-
-function renderFunds(){
- let total=funds.reduce((s,f)=>s+fundAmount(f),0);
- $("fundTotal").textContent=money(total);$("fundCount").textContent=`共 ${funds.length} 个资金项目`;
-
- let a=[...funds].sort((a,b)=>fundAmount(b)-fundAmount(a));
- $("fundList").innerHTML=a.length?a.map((f,i)=>{
-  let amt=fundAmount(f),p=total?amt/total*100:0;
-  return `<div class="fundItem">
-   <div class="fundRow">
-    <div class="rank">${i+1}</div>
-    <div class="fundInfo">
-     <div class="fundName">${esc(f.name)}</div>
-     <div class="fundMeta">${f.mode==="detail"?"明细资金 · "+f.details.length+" 项":"普通资金"}${f.note?" · "+esc(f.note):""}</div>
-     ${f.mode==="detail"?`<button class="detailBtn" onclick="openFundDetail(${f.id})">查看资金明细 ›</button>`:""}
-    </div>
-    <div class="fundMoney">${money(amt)}<div class="percent">${p.toFixed(2)}%</div></div>
-   </div>
-   <div class="bar"><span style="width:${Math.min(p,100)}%"></span></div>
-   <div class="actions">
-    <button class="miniBtn edit" onclick="editFund(${f.id})">编辑</button>
-    <button class="miniBtn danger" onclick="deleteFund(${f.id})">删除</button>
-   </div>
-  </div>`;
- }).join(""):'<div class="empty">还没有资金数据</div>';
-}
-
-/* ===== 资金内部明细 ===== */
-
-function nextNumber(f){
- let nums=(f.details||[]).map(x=>parseInt(x.number)).filter(Number.isFinite);
- return nums.length?Math.max(...nums)+1:1;
-}
-
-function clearDetailForm(){
+ currentFundId=id;
  editDetailId=null;
- $("detailName").value=$("detailAmount").value=$("detailNoteInput").value="";
- let f=funds.find(x=>x.id===currentFundId);
- $("detailNumber").value=f?nextNumber(f):1;
- $("detailFormTitle").textContent="添加明细";
- $("detailSaveBtn").textContent="保存明细";
+
+ const f=funds.find(x=>x.id===id);
+
+ if(!f)return;
+
+ $("fundPage").classList.remove("active");
+ $("detailPage").classList.add("active");
+
+ $("detailTitle").textContent=
+ f.name+" · 资金组成";
+
+ clearDetailForm();
+ renderDetails();
+
+ window.scrollTo(0,0);
 }
+
+
+function backFunds(){
+
+ $("detailPage").classList.remove("active");
+ $("fundPage").classList.add("active");
+
+ currentFundId=null;
+
+ renderFunds();
+ window.scrollTo(0,0);
+}
+
+
+/* =====================
+   自动编号
+===================== */
+
+function nextNumber(){
+
+ const f=funds.find(
+  x=>x.id===currentFundId
+ );
+
+ if(!f)return 1;
+
+ const numbers=
+  (f.details||[])
+  .map(x=>parseInt(x.number))
+  .filter(Number.isFinite);
+
+ return numbers.length
+ ?Math.max(...numbers)+1
+ :1;
+}
+
+
+/* =====================
+   添加组成
+===================== */
 
 function saveDetail(){
- let f=funds.find(x=>x.id===currentFundId);if(!f)return;
- let number=$("detailNumber").value.trim(),name=$("detailName").value.trim();
- let amount=+$("detailAmount").value,note=$("detailNoteInput").value.trim();
 
- if(!number)return alert("请输入编号");
- if(!name)return alert("请输入名称");
- if(!amount||amount<=0)return alert("请输入正确金额");
+ const f=funds.find(
+  x=>x.id===currentFundId
+ );
+
+ if(!f)return;
+
+ const number=
+  $("detailNumber").value.trim();
+
+ const name=
+  $("detailName").value.trim();
+
+ const amount=
+  Number($("detailAmount").value);
+
+ const note=
+  $("detailNote").value.trim();
+
+ if(!number)
+  return alert("请输入编号");
+
+ if(!name)
+  return alert("请输入名称");
+
+ if(!Number.isFinite(amount)||amount<=0)
+  return alert("请输入正确金额");
 
  if(editDetailId){
-  let x=f.details.find(x=>x.id===editDetailId);
-  if(x)Object.assign(x,{number,name,amount,note});
+
+  const d=f.details.find(
+   x=>x.id===editDetailId
+  );
+
+  if(d){
+   d.number=number;
+   d.name=name;
+   d.amount=amount;
+   d.note=note;
+  }
+
  }else{
-  f.details.push({id:Date.now(),number,name,amount,note});
+
+  f.details.push({
+   id:Date.now(),
+   number,
+   name,
+   amount,
+   note
+  });
+
  }
 
- saveData();clearDetailForm();renderDetail();
+ saveData();
+ clearDetailForm();
+ renderDetails();
 }
+
+
+function clearDetailForm(){
+
+ editDetailId=null;
+
+ $("detailNumber").value=
+ currentFundId
+ ?nextNumber()
+ :"";
+
+ $("detailName").value="";
+ $("detailAmount").value="";
+ $("detailNote").value="";
+
+ $("detailFormTitle").textContent=
+ "添加组成";
+
+ $("detailSaveText").textContent=
+ "保存组成";
+}
+
+
+/* =====================
+   编辑组成
+===================== */
 
 function editDetail(id){
- let f=funds.find(x=>x.id===currentFundId),x=f?.details.find(x=>x.id===id);if(!x)return;
+
+ const f=funds.find(
+  x=>x.id===currentFundId
+ );
+
+ if(!f)return;
+
+ const d=f.details.find(
+  x=>x.id===id
+ );
+
+ if(!d)return;
+
  editDetailId=id;
- $("detailNumber").value=x.number;$("detailName").value=x.name;
- $("detailAmount").value=x.amount;$("detailNoteInput").value=x.note||"";
- $("detailFormTitle").textContent="编辑明细";$("detailSaveBtn").textContent="保存修改";
- window.scrollTo({top:0,behavior:"smooth"});
+
+ $("detailNumber").value=d.number;
+ $("detailName").value=d.name;
+ $("detailAmount").value=d.amount;
+ $("detailNote").value=d.note||"";
+
+ $("detailFormTitle").textContent=
+ "编辑组成";
+
+ $("detailSaveText").textContent=
+ "保存修改";
+
+ window.scrollTo({
+  top:300,
+  behavior:"smooth"
+ });
 }
+
+
+/* =====================
+   删除组成
+===================== */
 
 function deleteDetail(id){
- let f=funds.find(x=>x.id===currentFundId);if(!f||!confirm("确定删除这条明细吗？"))return;
- f.details=f.details.filter(x=>x.id!==id);saveData();clearDetailForm();renderDetail();
+
+ const f=funds.find(
+  x=>x.id===currentFundId
+ );
+
+ if(!f)return;
+
+ if(!confirm("确定删除这条组成明细吗？"))
+  return;
+
+ f.details=
+  f.details.filter(x=>x.id!==id);
+
+ saveData();
+ clearDetailForm();
+ renderDetails();
 }
 
-function renderDetail(){
- let f=funds.find(x=>x.id===currentFundId);if(!f)return;
- $("detailTotal").textContent=money(fundAmount(f));
 
- let a=[...(f.details||[])].sort((a,b)=>{
-  let x=parseFloat(a.number),y=parseFloat(b.number);
-  return Number.isFinite(x)&&Number.isFinite(y)?x-y:String(a.number).localeCompare(String(b.number));
- });
+/* =====================
+   显示组成
+===================== */
 
- $("detailList").innerHTML=a.length?a.map(x=>`
- <div class="detailItem">
+function renderDetails(){
+
+ const f=funds.find(
+  x=>x.id===currentFundId
+ );
+
+ if(!f)return;
+
+ if(!Array.isArray(f.details))
+  f.details=[];
+
+ const used=
+  f.details.reduce(
+   (s,x)=>s+Number(x.amount||0),0
+  );
+
+ const remain=
+  Number(f.amount)-used;
+
+ $("detailFundTotal").textContent=
+ money(f.amount);
+
+ $("detailFundName").textContent=
+ f.name;
+
+ $("sumTotal").textContent=
+ money(f.amount);
+
+ $("sumUsed").textContent=
+ money(used);
+
+ $("sumRemain").textContent=
+ money(remain);
+
+ $("sumRemain").className=
+ remain<0
+ ?"red"
+ :remain===0
+ ?"green"
+ :"";
+
+ const sorted=
+  [...f.details].sort((a,b)=>{
+
+   const A=parseFloat(a.number);
+   const B=parseFloat(b.number);
+
+   if(Number.isFinite(A)&&Number.isFinite(B))
+    return A-B;
+
+   return String(a.number)
+   .localeCompare(String(b.number));
+
+  });
+
+ $("detailList").innerHTML=
+ sorted.length
+ ?
+ sorted.map(d=>`
+
+ <div class="detail">
+
   <div class="detailTop">
-   <div class="detailNo">${esc(x.number)}</div>
-   <div class="detailInfo">
-    <div class="detailName">${esc(x.name)}</div>
-    <div class="detailNote">${x.note?esc(x.note):"暂无备注"}</div>
+
+   <div class="detailNo">
+    ${esc(d.number)}
    </div>
-   <div class="detailMoney">${money(x.amount)}</div>
+
+   <div class="detailInfo">
+
+    <div class="detailName">
+     ${esc(d.name)}
+    </div>
+
+    <div class="detailNote">
+     ${d.note
+      ?esc(d.note)
+      :"暂无备注"
+     }
+    </div>
+
+   </div>
+
+   <div class="detailMoney">
+    ${money(d.amount)}
+   </div>
+
   </div>
+
   <div class="actions">
-   <button class="miniBtn edit" onclick="editDetail(${x.id})">编辑</button>
-   <button class="miniBtn danger" onclick="deleteDetail(${x.id})">删除</button>
+
+   <button
+    class="smallBtn blue"
+    onclick="editDetail(${d.id})">
+    编辑
+   </button>
+
+   <button
+    class="smallBtn gray"
+    onclick="deleteDetail(${d.id})">
+    删除
+   </button>
+
   </div>
- </div>`).join(""):'<div class="empty">还没有资金明细</div>';
+
+ </div>
+
+ `).join("")
+
+ :
+
+ `<div class="empty">
+   暂无组成明细
+  </div>`;
 }
+
+
+/* 初始化 */
+
+funds= funds.map(f=>({
+ ...f,
+ details:Array.isArray(f.details)
+ ?f.details
+ :[]
+}));
 
 saveData();
-renderHome();
 renderFunds();
+
 </script>
+
 </body>
 </html>
